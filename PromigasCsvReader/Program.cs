@@ -15,13 +15,6 @@ namespace PromigasCsvReader
 
             List<string> data;
 
-            //data = dataHolder.getAllData("hola");
-
-            //if (data == null)
-            //{
-            //    Console.WriteLine("hola null ");
-            //}
-
             data = dataHolder.getAllData("CARA_U1_P1");
 
             if (data == null)
@@ -31,8 +24,16 @@ namespace PromigasCsvReader
             {
                 Console.WriteLine("CARA_U1_P1 found "+data.Count+ "  "+ dataHolder.getCurrentData("CARA_U1_P1"));
 
+                int c = 0;
                 foreach (string text in data)
+                {
+                    c++;
                     Console.WriteLine(text);
+                    if (c == 10)
+                    {
+                        break;
+                    }
+                }
             }
 
 

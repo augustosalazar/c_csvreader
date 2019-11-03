@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.VisualBasic.FileIO;
+using System.IO;
 
 namespace PromigasCsvReader
 {
@@ -20,59 +20,77 @@ namespace PromigasCsvReader
 
         public void loadData()
         {
-
-            var path = @"/Users/augustosalazar/Projects/PromigasCsvReader/PromigasCsvReader/HistoryData.csv";
-            Console.WriteLine("Hello World!");
+            //string line;
             List<string> values = new List<string>();
+            List<string> resLines = new List<string>();
+            //System.IO.StreamReader file = new System.IO.StreamReader(@"C:\temp\HistoryData.csv");
+            //while ((line = file.ReadLine()) != null)
 
-            using (TextFieldParser csvParser = new TextFieldParser(path))
+            var strLines = File.ReadLines(@"C:\temp\HistoryData.csv");
+            foreach (var line in strLines)
+
             {
-                csvParser.CommentTokens = new string[] { "#" };
-                csvParser.SetDelimiters(new string[] { "," });
-                csvParser.HasFieldsEnclosedInQuotes = true;
+                var res = line.Split(new char[] { ',' });
 
-                // Skip the row with the column names
-                csvParser.ReadLine();
-
-                while (!csvParser.EndOfData)
+                string Name = res[0];
+                values.Clear();
+                for (int i = 1; i < res.Length; i++)
                 {
-                    // Read current line fields, pointer moves to the next line.
-                    string[] fields = csvParser.ReadFields();
-                    string Name = fields[0];
-                    values.Clear();
-                    for (int i = 1; i < fields.Length; i++)
-                    {
-                        values.Add(fields[i]);
-                    }
-                    Console.WriteLine("New variable " + Name+ "  "+ values.Count);
-                    addVariable(new Variable(Name, values));
-
+                    values.Add(res[i]);
                 }
+                //Console.WriteLine("name " + Name +"  "+ values[0]);
+                addVariable(new Variable(Name, values));
+
             }
-            Console.WriteLine("Total " + count());
 
-
+            //Console.WriteLine("Total " + count());
         }
+        
 
         public int count()
         {
             return theData.Count;
         }
 
-        public List<string> getAllData(string variableName)
+        public List<string> getHistory(string variableName,int type)
         {
+            int limit = 1;
             List<string> data = new List<string>();
+            switch (type)
+            {
+                case 0:
+                    limit = 10;
+                    break;
 
-            foreach (Variable variable in theData){
+                case 1:
+                    limit = 10;
+                    break;
+
+                case 2:
+                    limit = 10;
+                    break;
+
+            }
+
+            foreach (Variable variable in theData)
+            {
                 if (variableName.Equals(variable.name))
                 {
-                    data = variable.values;
+                    for (int i = 1; i <= limit; i++)
+                    {
+                        data.Add(variable.values[i]);
+                    }
                     return data;
                 }
             }
 
-            return null;
+            for (int i = 1; i <= limit; i++)
+            {
+                data.Add("-1");
+            }
+            return data;
         }
+
 
         public string getCurrentData(string variableName)
         {
@@ -80,14 +98,18 @@ namespace PromigasCsvReader
 
             foreach (Variable variable in theData)
             {
-                if (variableName.Equals(variable.name))
+                if (variableName == variable.name)
                 {
                     data = variable.values[0];
                     return data;
                 }
             }
 
-            return null;
+            return "-1";
         }
     }
+
+
+
+
 }
